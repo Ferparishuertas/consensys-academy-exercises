@@ -1,48 +1,81 @@
+//Remittance  Practice
+
 
 pragma solidity ^0.4.6;
 
 contract Remittance  {
     
-    address public owner ;
-    uint maxDays = 100 ;
-    uint fee = 40;
+    address public owner;
+    uint public maxSeconds = 100;
+    uint public fee = 40;
     
     struct Challenge {
         address sender;
         address receiver;
         uint challengedValue;
         uint deadline;
-        bytes32 password;
+        bytes32 password1;
     }
     
      mapping(bytes32 => Challenge) public challenges;
+     mapping(bytes32 => bool) public withDrawm;
+     mapping(bytes32 => bool) public cancelledNonWithDrawn;
+
+    modifier isOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    modifier isChallengeSender(bytes32 challengeId) {
+        require(msg.sender == challenges[challengeId].sender);
+        _;
+    }
+
+     modifier isChallengePassedAndNotWithDrawn(bytes32 challengeId) {
+        require(now > challenges[challengeId].deadline);
+        require(!withDrawm[challengeId]);
+        require(!cancelledNonWithDrawn[challengeId]);
+        _;
+    }
+
 
     
     function Remittance(){
       owner = msg.sender;   
     }
     
-    function openChallenge(address receiver, bytes32 password1,bytes32 password2, uint deadline) payable returns (bool) {
-        require(challenges[password1].deadline != 0);
-        require(deadline < maxDays);
+    function openChallenge(address receiver, bytes32 password1, uint deadline) payable returns (bytes32 challengeId) {
+        require(deadline <= maxSeconds);
         require(msg.value > fee);
-        challenges[password1] = Challenge(msg.sender, receiver, msg.value,now + deadline * 1 days,password2);
-        return true;
+        challengeId = keccak256(msg.sender,receiver,msg.value);
+        uint toChallenge = msg.value - fee;
+        challenges[challengeId] = Challenge(msg.sender, receiver, toChallenge ,now + deadline,password1);
+        owner.transfer(fee);
+        return challengeId;
     }
     
-    function withDraw(bytes32 password1, bytes32 password2) returns (bool){
-        require(now < challenges[password1].deadline);
-        require(challenges[password1].password == password2);
-        var toWithDraw = challenges[password1].challengedValue - fee;
-        msg.sender.transfer(toWithDraw);
-        owner.transfer(fee);
+    function withDraw(bytes32 challengeId, bytes32 password1) returns (bool){
+        require(challenges[challengeId].receiver == msg.sender);
+        require(challenges[challengeId].password1 == keccak256(password1));
+        require(now < challenges[challengeId].deadline);
+        withDrawm[challengeId] = true;
+        msg.sender.transfer(challenges[challengeId].challengedValue);
         return true;
     }
 
-    function kill() {
+    function cancelNonWithDrawnChallenge(bytes32 challengeId) isChallengeSender(challengeId) isChallengePassedAndNotWithDrawn(challengeId)  returns (bool) {
+        cancelledNonWithDrawn[challengeId] = true;
+        msg.sender.transfer(challenges[challengeId].challengedValue);
+        return true;
+    }
+
+    function kill() isOwner returns (bool) {
+
         selfdestruct(owner);
+        return true;
     }
 
     
     function ()  {}
+
 }

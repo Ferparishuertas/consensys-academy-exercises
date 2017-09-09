@@ -7,45 +7,46 @@ contract Splitter  {
     address public owner ;
     address public receiver1;
     address public receiver2;
-    uint public balance;
-    
+    mapping(address => uint) balances;
     
     modifier isOwner() {
         require(msg.sender == owner);
         _;
     }
     
-    function Splitter(address ownerAddress,address receiver1Address,address receiver2Address) {
+    function Splitter() {
     
-        owner = ownerAddress;
-        receiver1 = receiver1Address;
-        receiver2 = receiver2Address;
+        owner = msg.sender;
     }
 
-    function kill() isOwner{
-        owner.transfer(balance);
-        selfdestruct(owner);
+    function kill() isOwner returns (bool){
+        bool result = owner.send(balance);
+        if (result) selfdestruct(owner);
+        return result;
     }
     
     function showBalance() constant returns (uint){
-        return balance;
+        return this.balance;
     }
     
-    function showAddressBalance(address caller) constant returns (uint){
-        return caller.balance;
-    }
     
-    function pay() payable returns (bool){
+    function pay(address receiver1, address receiver2) public payable returns (bool){
         require(msg.value > 0);
-        if(msg.sender != owner){
-            balance += msg.value;   
-        }
-        else{
-          receiver1.transfer(msg.value/2);
-          receiver2.transfer(msg.value/2);
-        }
+        require(receiver1 != 0 );
+        require(receiver2 != 0 );
+
+        balances[receiver1]+=msg.value/2;
+        balances[receiver2]+=msg.value/2;
+        balances[msg.sender] += msg.value%2;
         return true;
     }
+
+    function withdraw() constant returns (bool){
+      require(balances[msg.sender]!=0);
+      bool result = msg.sender.send()
+      return result;
+    }
+
     
     function ()  {}
 }

@@ -15,15 +15,15 @@ contract('Remittance', function(accounts) {
 
 	});
 
-        it("After opening the challenge,  balance must be 1000", () => {
+        it("After opening the challenge,  balance must be 1000 -fee = 960 ", () => {
  
-	       return instance.openChallenge(address3,"pp@ppx.com","",10,{from:address1,amount:amountToPay})
+	       return instance.openChallenge(address3,"pp@ppx.com",10,{from:address1,amount:amountToPay})
 	        .then(result  => {
 	            assert.isTrue(result, "Challenge not opened");
                     return instance.showBalance()
                })
                 .then(result => {
-                    assert.isTrue(result == 1000, "Balance is not 1000");
+                    assert.isTrue(result == 960, "Balance is not 1000");
                     return;
                 });
        
