@@ -1,0 +1,93 @@
+{
+  "contract_name": "Pauseable",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "resume",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isPaused",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "LogContractPaused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "LogContractResumed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "old",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "current",
+          "type": "address"
+        }
+      ],
+      "name": "NewOwner",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x60606040525b60008054600160a060020a03191633600160a060020a03161790555b5b610276806100316000396000f300606060405263ffffffff60e060020a600035041663046f7da281146100505780638456cb59146100655780638da5cb5b1461007a578063b187bd26146100a9578063f2fde38b146100d0575b600080fd5b341561005b57600080fd5b6100636100f1565b005b341561007057600080fd5b610063610149565b005b341561008557600080fd5b61008d6101a7565b604051600160a060020a03909116815260200160405180910390f35b34156100b457600080fd5b6100bc6101b6565b604051901515815260200160405180910390f35b34156100db57600080fd5b610063600160a060020a03600435166101c6565b005b60005433600160a060020a0390811691161461010957fe5b6000805460a060020a60ff02191690557fdf670314aa1c3ef9e4bf9224b3b41f2d98d5e59ee959b56007e880be4789c27460405160405180910390a15b5b565b60005433600160a060020a0390811691161461016157fe5b6000805460a060020a60ff02191660a060020a1790557f80013616e929337540c361e27289c2e0e38a3fe922d30f8b3183b6ffb214a94460405160405180910390a15b5b565b600054600160a060020a031681565b60005460a060020a900460ff1681565b60005433600160a060020a039081169116146101de57fe5b600160a060020a0381161561024557600054600160a060020a0380831691167f70aea8d848e8a90fb7661b227dc522eb6395c3dac71b63cb59edd5c9899b236460405160405180910390a360008054600160a060020a031916600160a060020a0383161790555b5b5b505600a165627a7a72305820b0315c4af4e58e7915571591310efd73ca12ee0e2c01364c4c4c46e6f5d703a20029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1505071676519
+}

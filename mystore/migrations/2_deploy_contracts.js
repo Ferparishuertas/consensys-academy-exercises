@@ -1,5 +1,5 @@
-var StockDatabase = artifacts.require("./StockDatabase.sol");
+var ShopFront = artifacts.require("./ShopFront.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(StockDatabase);
+  deployer.deploy(ShopFront);
 };

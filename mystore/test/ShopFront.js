@@ -1,6 +1,6 @@
-var StockDatabase = artifacts.require("./StockDatabase.sol");
+var ShopFront = artifacts.require("./ShopFront.sol");
 
-contract('StockDatabase', function(accounts) {
+contract('ShopFront', function(accounts) {
 
 	var instance;	
 	var owner = accounts[0];
@@ -10,7 +10,7 @@ contract('StockDatabase', function(accounts) {
     var stock = 1;
 
 	beforeEach(function() {
-		return StockDatabase.new({from: owner}).then(thisInstance => {
+		return ShopFront.new({from: owner}).then(thisInstance => {
           instance = thisInstance;
         });
 
@@ -52,10 +52,9 @@ contract('StockDatabase', function(accounts) {
  	it("Administrator can add Product",  async () => {
  		await instance.addAdministrator(address1,{from: owner});
  		await instance.addProduct("sku-1",stock,skuPrice,{from: address1});
-    	return await instance.products("sku-1",{from: owner})
+    	return await instance.getProduct("sku-1",{from: owner})
         .then(product  => {
-            assert.isTrue(product[1] == stock, "Cannot add product as admin");
-            assert.isTrue(product[2] == skuPrice, "Cannot add product as admin");
+            assert.isTrue(product[0], "Cannot add product as admin");
             return;
         });
         
@@ -74,7 +73,7 @@ contract('StockDatabase', function(accounts) {
    	    await instance.addAdministrator(address1,{from: owner});
  		await instance.addProduct("sku-1",stock,skuPrice,{from: address1});
  	    await instance.buyProduct("sku-1",stock,{from: address2, value:skuPrice });
-        return await instance.products("sku-1",{from: owner})
+        return await instance.getProduct("sku-1",{from: owner})
         .then(product  => {
             assert.isTrue(product[1] == stock - 1, "Cannot add product as admin");
             return;
