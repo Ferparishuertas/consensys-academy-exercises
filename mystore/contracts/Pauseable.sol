@@ -4,19 +4,21 @@ import "./Owned.sol";
 
 contract Pauseable is Owned {
 
-		event LogContractPaused();
-		event LogContractResumed();
+		event ContractPaused();
+		event ContractResumed();
 
     bool public isPaused;
 
-    function pause() public onlyOwner {
+    function pause() public onlyOwner returns (bool)  {
         isPaused = true;
-		LogContractPaused();
+		ContractPaused();
+        return true;
     }
 
-    function resume() public onlyOwner {
+    function resume() public onlyOwner returns (bool) {
         isPaused = false;
-		LogContractResumed();
+		ContractResumed();
+        return true;
     }
 
     modifier isNotPaused {

@@ -9,17 +9,16 @@ contract Owned {
         owner = msg.sender;
     }
     modifier onlyOwner() {
-        assert(msg.sender == owner);
+        require(msg.sender == owner);
         _;
     }
 
     event NewOwner(address indexed old, address indexed current);
 
-    function transferOwnership(address newOwner) external onlyOwner {
-    	//Check it address not set
-        if (newOwner != address(0)) {
-        	NewOwner(owner,newOwner);
-            owner = newOwner;
-        }
+    function transferOwnership(address newOwner) external onlyOwner returns (bool){
+        require(newOwner != address(0));
+        NewOwner(owner,newOwner);
+        owner = newOwner;
+        return true;
     }
 }

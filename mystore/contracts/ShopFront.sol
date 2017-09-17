@@ -1,11 +1,12 @@
 pragma solidity ^0.4.6;
 
 import "./Pauseable.sol";
+import "./Sponsored.sol";
 
 /**
  * This contract Manages a Database
  */
-contract ShopFront is Pauseable {
+contract ShopFront is Pauseable, Sponsored {
 
 	uint public balance;
 	mapping(address => bool) public administrators;
@@ -85,17 +86,17 @@ contract ShopFront is Pauseable {
 
 	event StockIncreased(address, bytes32 sku, uint units);
 
-	function StockDatabase () {
-		
+	function ShopFront (address _sponsor) {
+		sponsor = _sponsor;
 	}
 
-	function addAdministrator(address admintoAdd) isNotPaused onlyOwner returns (bool) {
+	function addAdministrator(address admintoAdd) isNotPaused onlySponsor returns (bool) {
 		AdministratorAdded(admintoAdd);
 		administrators[admintoAdd] = true;
 		return true;
 	}
 
-	function removeAdministrator(address admintoRemove) isNotPaused onlyOwner returns (bool) {
+	function removeAdministrator(address admintoRemove) isNotPaused onlySponsor returns (bool) {
 	    AdministratorRemoved(admintoRemove);
 		administrators[admintoRemove] = false;
 		return true;
@@ -131,13 +132,13 @@ contract ShopFront is Pauseable {
         return true;
     }
 
-    function withdraw(uint amount) isNotPaused onlyOwner enoughFunds(amount) returns (bool){    	
+    function withdraw(uint amount) isNotPaused onlySponsor enoughFunds(amount) returns (bool){    	
         AmountWithDrawn(msg.sender,amount);
     	balance -= amount;
     	return msg.sender.send(amount);
     }
 
-    function pay(address receiver, uint amount) isNotPaused onlyOwner enoughFunds(amount) returns (bool){
+    function pay(address receiver, uint amount) isNotPaused onlySponsor enoughFunds(amount) returns (bool){
         require (receiver != address(0));
         AmountPaid(msg.sender,receiver,amount);
     	balance -= amount;
@@ -151,7 +152,7 @@ contract ShopFront is Pauseable {
     function getProduct(bytes32 sku) isNotPaused productMustExist(sku) public constant returns(bool isProduct,uint stock, uint price, uint index)
    {
 	    return(
-	      products[sku].isProduct
+	      products[sku].isProduct,
 	      products[sku].stock, 
 	      products[sku].price,
 	      products[sku].index);
